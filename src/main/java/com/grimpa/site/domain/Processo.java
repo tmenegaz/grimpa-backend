@@ -20,7 +20,7 @@ public class Processo implements Serializable {
     private Integer id;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate dataInicio = LocalDate.now();
+    private LocalDate dataInicio;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataFim;

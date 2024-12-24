@@ -35,11 +35,10 @@ public class TecnicoDto implements Serializable {
     protected Set<Integer> perfis = new HashSet<>();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    protected LocalDate dataCriacao = LocalDate.now();
+    protected LocalDate dataCriacao;
 
     public TecnicoDto() {
         super();
-        addPerfil(Perfil.CLIENTE);
     }
 
     public TecnicoDto(Tecnico tecnico) {
@@ -51,7 +50,6 @@ public class TecnicoDto implements Serializable {
         this.senha = tecnico.getSenha();
         this.perfis = tecnico.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = tecnico.getDataCriacao();
-        addPerfil(Perfil.CLIENTE);
     }
 
     public Integer getId() {

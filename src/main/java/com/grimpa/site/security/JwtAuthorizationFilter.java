@@ -30,6 +30,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         if (!header.isBlank() && header.startsWith("Bearer ")) {
             UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationManager(header.substring(7));
 
+            assert authenticationToken != null;
             if (authenticationToken.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }

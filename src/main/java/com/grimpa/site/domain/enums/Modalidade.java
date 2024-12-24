@@ -1,7 +1,8 @@
 package com.grimpa.site.domain.enums;
 
 public enum Modalidade {
-    BALLET(0, "BALLET"), CONTEMPORANEO(1, "CONTEMPORANEO"), ALONGAMENTO(2, "ALONGAMENTO"), CRIACAO(3, "CRIACAO");
+    BALLET(0, "BALLET"), CONTEMPORANEO(1, "CONTEMPORANEO"),
+    ALONGAMENTO(2, "ALONGAMENTO"), CRIACAO(3, "CRIACAO");
 
     private Integer codigo;
     private String descricao;
