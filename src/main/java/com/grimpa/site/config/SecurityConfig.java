@@ -1,23 +1,25 @@
 package com.grimpa.site.config;
 
-import com.grimpa.site.security.JWTUtil;
+import com.grimpa.site.domain.enums.Roles;
+import com.grimpa.site.security.JWTService;
 import com.grimpa.site.security.JwtAuthenticationFilter;
-import com.grimpa.site.security.JwtAuthorizationFilter;
+import com.grimpa.site.security.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,18 +36,14 @@ public class SecurityConfig {
     private Environment env;
 
     @Autowired
-    private JWTUtil jwtUtil;
+    private SecurityFilter securityFilter;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private JWTService jwtService;
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
-        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
 
         if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
             httpSecurity.headers(ambientProperty -> ambientProperty.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
@@ -53,14 +51,21 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors((corsCustomizer) -> corsCustomizer.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(PUBLIC_MATCHERS).permitAll()
-                        .anyRequest().authenticated())
-                .authenticationManager(authenticationManager)
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager, jwtUtil, userDetailsService))
                 .sessionManagement((sessionManagerCustomizer) -> sessionManagerCustomizer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                        .requestMatchers(HttpMethod.GET).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/tecnicos").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.PUT, "/tecnicos/*").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.DELETE, "/tecnicos/*").hasRole(Roles.ADMIN.getDescricao())
+                        .requestMatchers(HttpMethod.POST, "/clientes").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.PUT, "/clientes/*").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.DELETE, "/clientes/*").hasRole(Roles.ADMIN.getDescricao())
+                        .anyRequest().authenticated())
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService))
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -72,6 +77,11 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

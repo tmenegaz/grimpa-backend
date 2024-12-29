@@ -28,7 +28,7 @@ public class ProcessoService {
     @Autowired
     private TecnicoRepository tecnicoRepository;
 
-    public Processo findById(Integer id) {
+    public Processo findById(String id) {
         Optional<Processo> processo = repository.findById(id);
         return processo.orElseThrow(() -> new ObjectNotFoundException("Processo não encontrado! ID:" + id));
     }
@@ -60,7 +60,7 @@ public class ProcessoService {
         return repository.save(processo);
     }
 
-    public Processo update(Integer id, ProcessoDto processoDto) {
+    public Processo update(String id, ProcessoDto processoDto) {
         processoDto.setId(id);
         Processo processoOld = this.findById(id);
 
@@ -86,7 +86,7 @@ public class ProcessoService {
         return repository.save(processoOld);
     }
 
-    public void delete(Integer id) {
+    public void delete(String id) {
         repository.deleteById(id);
     }
 

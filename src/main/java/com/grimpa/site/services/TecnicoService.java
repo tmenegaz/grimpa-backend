@@ -3,12 +3,16 @@ package com.grimpa.site.services;
 import com.grimpa.site.domain.Pessoa;
 import com.grimpa.site.domain.Tecnico;
 import com.grimpa.site.domain.dtos.TecnicoDto;
+import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.repositories.PessoaRepository;
 import com.grimpa.site.repositories.TecnicoRepository;
 import com.grimpa.site.services.exceptions.DataIntegrityViolationException;
 import com.grimpa.site.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +44,9 @@ public class TecnicoService {
     }
 
     @Transactional
-    public Tecnico update(Integer id, TecnicoDto tecnicoDto) {
+    public Tecnico update(String id, TecnicoDto tecnicoDto) {
         tecnicoDto.setId(id);
+        tecnicoDto.setSenha(encoder.encode(tecnicoDto.getSenha()));
         Tecnico tecnicoOld = this.findById(id);
 
         validaByCpfAndEmail(tecnicoDto);
@@ -49,11 +54,12 @@ public class TecnicoService {
         return repository.save(tecnicoOld);
     }
 
-    public List<Tecnico> findAll() {
-        return repository.findAll();
+    public Page<Tecnico> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAllByExcluido(pageable);
     }
 
-    public Tecnico findById(Integer id) {
+    public Tecnico findById(String id) {
         Optional<Tecnico> tecnico = repository.findById(id);
         return tecnico.orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
     }
@@ -92,11 +98,12 @@ public class TecnicoService {
         }
     }
 
-    public void delete(Integer id) {
+    public void delete(String id) {
         Tecnico tecnico = this.findById(id);
         if (!tecnico.getProcessos().isEmpty()) {
             throw new DataIntegrityViolationException("Técnico possui ordem de serviço e não pode ser deletado");
         }
-        repository.deleteById(id);
+        tecnico.setExcluido(Excluido.EXCLUIDO);
+        repository.save(tecnico);
     }
 }

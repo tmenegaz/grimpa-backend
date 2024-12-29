@@ -1,10 +1,10 @@
 package com.grimpa.site.services;
 
-import com.grimpa.site.domain.Pessoa;
 import com.grimpa.site.domain.Cliente;
+import com.grimpa.site.domain.Pessoa;
 import com.grimpa.site.domain.dtos.ClienteDto;
-import com.grimpa.site.repositories.PessoaRepository;
 import com.grimpa.site.repositories.ClienteRepository;
+import com.grimpa.site.repositories.PessoaRepository;
 import com.grimpa.site.services.exceptions.DataIntegrityViolationException;
 import com.grimpa.site.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
@@ -24,7 +24,7 @@ public class ClienteService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
-     @Autowired
+    @Autowired
     private BCryptPasswordEncoder encoder;
 
     public Cliente create(ClienteDto clienteDto) {
@@ -36,8 +36,9 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente update(Integer id, ClienteDto clienteDto) {
+    public Cliente update(String id, ClienteDto clienteDto) {
         clienteDto.setId(id);
+        clienteDto.setSenha(encoder.encode(clienteDto.getSenha()));
         Cliente clienteOld = this.findById(id);
 
         validaByCpfAndEmail(clienteDto);
@@ -50,7 +51,7 @@ public class ClienteService {
         return clientes;
     }
 
-    public Cliente findById(Integer id) {
+    public Cliente findById(String id) {
         Optional<Cliente> cliente = repository.findById(id);
         return cliente.orElseThrow(() -> new ObjectNotFoundException("Cliente não encontrado"));
     }
@@ -67,7 +68,7 @@ public class ClienteService {
         }
     }
 
-    public void delete(Integer id) {
+    public void delete(String id) {
         Cliente cliente = this.findById(id);
         if (!cliente.getProcessos().isEmpty()) {
             throw new DataIntegrityViolationException("Cliente possui ordem de serviço e não pode ser deletado");

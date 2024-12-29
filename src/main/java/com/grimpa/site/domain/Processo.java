@@ -16,8 +16,8 @@ public class Processo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataInicio;
@@ -42,7 +42,7 @@ public class Processo implements Serializable {
         super();
     }
 
-    public Processo(Integer id, Modalidade modalidade, Status status, String titulo, String observacao, Cliente cliente, Tecnico tecnico) {
+    public Processo(String id, Modalidade modalidade, Status status, String titulo, String observacao, Cliente cliente, Tecnico tecnico) {
         this.id = id;
         this.modalidade = modalidade;
         this.status = status;
@@ -72,11 +72,11 @@ public class Processo implements Serializable {
         return processo;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,26 +1,25 @@
 package com.grimpa.site.domain.enums;
 
-public enum Perfil {
-
-    CLIENTE(0, "CLIENTE"),
-    TECNICO(1, "TECNICO");
+public enum Roles {
+    ADMIN(0, "ADMIN"),
+    USER(1, "USER");
 
     private Integer codigo;
     private String descricao;
 
-    Perfil(Integer codigo, String descricao) {
+    Roles(Integer codigo, String descricao) {
         this.codigo = codigo;
         this.descricao = descricao;
     }
 
-    public static Perfil toEnum(Integer codigo) {
+    public static Roles toEnum(Integer codigo) {
         if (codigo == null) return null;
 
-        for (Perfil perfil : Perfil.values()) {
-            if (codigo.equals(perfil.getCodigo())) return perfil;
+        for (Roles role : Roles.values()) {
+            if (codigo.equals(role.getCodigo())) return role;
         }
         try {
-            throw new IllegalAccessException("Perfil inválido");
+            throw new IllegalAccessException("Papel inválido");
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

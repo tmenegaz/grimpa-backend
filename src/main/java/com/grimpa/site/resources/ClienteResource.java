@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "clientes")
+@RequestMapping(value = "/clientes")
 public class ClienteResource {
 
     @Autowired
@@ -28,13 +28,13 @@ public class ClienteResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClienteDto> update(@PathVariable Integer id, @RequestBody ClienteDto clienteDto ) {
+    public ResponseEntity<ClienteDto> update(@PathVariable String id, @RequestBody ClienteDto clienteDto ) {
         Cliente cliente = service.update(id, clienteDto);
         return ResponseEntity.ok().body(new ClienteDto(cliente));
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ClienteDto> findById(@PathVariable Integer id) {
+    public ResponseEntity<ClienteDto> findById(@PathVariable String id) {
         Cliente cliente = service.findById(id);
         return ResponseEntity.ok().body(new ClienteDto(cliente));
     }
@@ -46,7 +46,7 @@ public class ClienteResource {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<ClienteDto> delete(@PathVariable Integer id) {
+    public ResponseEntity<ClienteDto> delete(@PathVariable String id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

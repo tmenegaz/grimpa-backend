@@ -2,9 +2,8 @@ package com.grimpa.site.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.grimpa.site.domain.enums.Perfil;
+import com.grimpa.site.domain.enums.Roles;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import org.hibernate.validator.constraints.br.CPF;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -20,8 +19,8 @@ public abstract class Pessoa implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected String id;
     protected String nome;
 
     @Column(unique = true)
@@ -36,6 +35,10 @@ public abstract class Pessoa implements Serializable {
     @CollectionTable(name = "PERFIS")
     protected Set<Integer> perfis = new HashSet<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "ROLES")
+    protected Set<Integer> roles = new HashSet<>();
+
     @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao;
 
@@ -43,7 +46,7 @@ public abstract class Pessoa implements Serializable {
         super();
     }
 
-    public Pessoa(Integer id, String nome, String cpf, String email, String senha) {
+    public Pessoa(String id, String nome, String cpf, String email, String senha) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -51,11 +54,11 @@ public abstract class Pessoa implements Serializable {
         this.senha = senha;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -92,11 +95,27 @@ public abstract class Pessoa implements Serializable {
     }
 
     public Set<Perfil> getPerfis() {
-        return perfis.stream().map(Perfil::toEnum).collect(Collectors.toSet());
+        return this.perfis.stream().map(Perfil::toEnum).collect(Collectors.toSet());
+    }
+
+    public Perfil getPerfil() {
+        return this.perfis.stream().map(Perfil::toEnum).findFirst().orElse(null);
     }
 
     public void addPerfil(Perfil perfil) {
         this.perfis.add(perfil.getCodigo());
+    }
+
+    public Set<Roles> getRoles() {
+        return this.roles.stream().map(Roles::toEnum).collect(Collectors.toSet());
+    }
+
+    public Roles getRole() {
+        return this.roles.stream().map(Roles::toEnum).findFirst().orElse(null);
+    }
+
+    public void addRoles(Roles roles) {
+        this.roles.add(roles.getCodigo());
     }
 
     public LocalDate getDataCriacao() {

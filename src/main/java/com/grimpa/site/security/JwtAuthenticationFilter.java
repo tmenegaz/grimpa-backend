@@ -1,6 +1,7 @@
 package com.grimpa.site.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grimpa.site.domain.UserSS;
 import com.grimpa.site.domain.dtos.CredentiosDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,26 +14,26 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-    private JWTUtil jwtUtil;
+    private JWTService jwtService;
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
         super();
         this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
+        this.jwtService = jwtService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             CredentiosDto credentiosDto = new ObjectMapper().readValue(request.getInputStream(), CredentiosDto.class);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(credentiosDto.getEmail(), credentiosDto.getSenha(), new ArrayList<>());
+            var authenticationToken = new UsernamePasswordAuthenticationToken(
+                    credentiosDto.getUsername(), credentiosDto.getPassword());
             return this.authenticationManager.authenticate(authenticationToken);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -40,9 +41,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String username = ((UserSS) authResult.getPrincipal()).getUsername();
-        String token = jwtUtil.generateToken(username);
+    protected void successfulAuthentication(
+            HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult
+    ) throws IOException, ServletException {
+        UserSS userSS = ((UserSS) authResult.getPrincipal());
+        String token = jwtService.generateToken(userSS);
         response.addHeader("access-control-expose-headers", "Authorization");
         response.addHeader("Authorization", "Bearer " + token);
     }
@@ -60,7 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 + "\"timestamp\": " + date + ", "
                 + "\"status\": 401, "
                 + "\"error\": \"Não autorizado\", "
-                + "\"message\": \"Email ou senha inválidos\", "
-                + "\"path\": \"/login\"}";
+                + "\"message\": \"Nome de usuário ou senha inválidos\", "
+                + "\"path\": \"/auth/login\"}";
     }
 }

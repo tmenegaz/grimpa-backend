@@ -3,7 +3,9 @@ package com.grimpa.site.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grimpa.site.domain.dtos.ClienteDto;
+import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.domain.enums.Perfil;
+import com.grimpa.site.domain.enums.Roles;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -21,12 +23,14 @@ public class Cliente extends Pessoa {
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Processo> processos = new ArrayList<>();
+    
+    private Excluido excluido;
 
     public Cliente() {
         super();
     }
 
-    public Cliente(Integer id, String nome, String cpf, String email, String senha) {
+    public Cliente(String id, String nome, String cpf, String email, String senha) {
         super(id, nome, cpf, email, senha);
     }
 
@@ -38,6 +42,7 @@ public class Cliente extends Pessoa {
         this.email = clienteDto.getEmail();
         this.senha = clienteDto.getSenha();
         this.perfis = clienteDto.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
+        this.roles = clienteDto.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = clienteDto.getDataCriacao();
     }
 
@@ -47,5 +52,24 @@ public class Cliente extends Pessoa {
 
     public void setProcessos(List<Processo> processos) {
         this.processos = processos;
+    }
+
+    public Tecnico toExcluidoCliente(Integer excluido) {
+        Tecnico tecnico = new Tecnico();
+        try {
+            tecnico.setExcluido(Excluido.toEnum(excluido));
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        }
+        return tecnico;
+
+    }
+
+    public Excluido getExcluido() {
+        return excluido;
+    }
+
+    public void setExcluido(Excluido excluido) {
+        this.excluido = excluido;
     }
 }

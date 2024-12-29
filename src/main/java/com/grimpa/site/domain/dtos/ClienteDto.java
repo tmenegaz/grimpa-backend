@@ -2,7 +2,9 @@ package com.grimpa.site.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.grimpa.site.domain.Cliente;
+import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.domain.enums.Perfil;
+import com.grimpa.site.domain.enums.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 public class ClienteDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected Integer id;
+    protected String id;
 
     @NotNull(message = "O campo NOME é requerido")
     protected String nome;
@@ -32,14 +34,17 @@ public class ClienteDto implements Serializable {
     @NotNull(message = "O campo SENHA é requerido")
     protected String senha;
 
+    private Excluido excluido;
+
     protected Set<Integer> perfis = new HashSet<>();
+
+    protected Set<Integer> roles = new HashSet<>();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao = LocalDate.now();
 
     public ClienteDto() {
         super();
-        addPerfil(Perfil.CLIENTE);
     }
 
     public ClienteDto(Cliente cliente) {
@@ -50,15 +55,15 @@ public class ClienteDto implements Serializable {
         this.email = cliente.getEmail();
         this.senha = cliente.getSenha();
         this.perfis = cliente.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
+        this.roles = cliente.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = cliente.getDataCriacao();
-        addPerfil(Perfil.CLIENTE);
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -100,6 +105,14 @@ public class ClienteDto implements Serializable {
 
     public void addPerfil(Perfil perfil) {
         this.perfis.add(perfil.getCodigo());
+    }
+
+    public Set<Roles> getRoles() {
+        return roles.stream().map(Roles::toEnum).collect(Collectors.toSet());
+    }
+
+    public void addRoles(Roles roles) {
+        this.roles.add(roles.getCodigo());
     }
 
     public LocalDate getDataCriacao() {

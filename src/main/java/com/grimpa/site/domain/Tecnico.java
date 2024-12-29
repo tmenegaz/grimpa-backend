@@ -3,7 +3,9 @@ package com.grimpa.site.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grimpa.site.domain.dtos.TecnicoDto;
+import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.domain.enums.Perfil;
+import com.grimpa.site.domain.enums.Roles;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -22,14 +24,14 @@ public class Tecnico extends Pessoa {
     @OneToMany(mappedBy = "tecnico")
     private List<Processo> processos = new ArrayList<>();
 
+    private Excluido excluido;
+
     public Tecnico() {
         super();
-        addPerfil(Perfil.CLIENTE);
     }
 
-    public Tecnico(Integer id, String nome, String cpf, String email, String senha) {
+    public Tecnico(String id, String nome, String cpf, String email, String senha) {
         super(id, nome, cpf, email, senha);
-        addPerfil(Perfil.CLIENTE);
     }
 
     public Tecnico(TecnicoDto tecnicoDto) {
@@ -40,6 +42,7 @@ public class Tecnico extends Pessoa {
         this.email = tecnicoDto.getEmail();
         this.senha = tecnicoDto.getSenha();
         this.perfis = tecnicoDto.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
+        this.roles = tecnicoDto.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = tecnicoDto.getDataCriacao();
     }
 
@@ -49,5 +52,24 @@ public class Tecnico extends Pessoa {
 
     public void setProcessos(List<Processo> processos) {
         this.processos = processos;
+    }
+
+    public Tecnico toExcluidoTecnico(Integer excluido) {
+        Tecnico tecnico = new Tecnico();
+        try {
+            tecnico.setExcluido(Excluido.toEnum(excluido));
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        }
+        return tecnico;
+
+    }
+
+    public Excluido getExcluido() {
+        return excluido;
+    }
+
+    public void setExcluido(Excluido excluido) {
+        this.excluido = excluido;
     }
 }

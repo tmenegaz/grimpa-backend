@@ -3,6 +3,7 @@ package com.grimpa.site.domain.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.grimpa.site.domain.Tecnico;
 import com.grimpa.site.domain.enums.Perfil;
+import com.grimpa.site.domain.enums.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class TecnicoDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected Integer id;
+    protected String id;
 
     @NotNull(message = "O campo NOME é requerido")
     protected String nome;
@@ -34,6 +35,8 @@ public class TecnicoDto implements Serializable {
 
     protected Set<Integer> perfis = new HashSet<>();
 
+    protected Set<Integer> roles = new HashSet<>();
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao;
 
@@ -49,14 +52,15 @@ public class TecnicoDto implements Serializable {
         this.email = tecnico.getEmail();
         this.senha = tecnico.getSenha();
         this.perfis = tecnico.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
+        this.roles = tecnico.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = tecnico.getDataCriacao();
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -98,6 +102,14 @@ public class TecnicoDto implements Serializable {
 
     public void addPerfil(Perfil perfil) {
         this.perfis.add(perfil.getCodigo());
+    }
+
+    public Set<Roles> getRoles() {
+        return roles.stream().map(Roles::toEnum).collect(Collectors.toSet());
+    }
+
+    public void addRoles(Roles roles) {
+        this.roles.add(roles.getCodigo());
     }
 
     public LocalDate getDataCriacao() {

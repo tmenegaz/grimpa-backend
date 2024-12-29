@@ -2,30 +2,30 @@ package com.grimpa.site.domain.dtos;
 
 public class CredentiosDto {
 
-    private String email;
-    private String senha;
+    private String username;
+    private String password;
 
     public CredentiosDto() {
     }
 
-    public CredentiosDto(String email, String senha) {
-        this.email = email;
-        this.senha = senha;
+    public CredentiosDto(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

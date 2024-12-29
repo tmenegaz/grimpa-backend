@@ -17,7 +17,7 @@ import java.util.Objects;
 public class ProcessoDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private String id;
 
     @NotNull(message = "O campo DATA INICIO é requerido")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -33,10 +33,10 @@ public class ProcessoDto implements Serializable {
     private String titulo;
     private String observacao;
 
-    private Integer tecnico;
+    private String tecnico;
     private String nomeTecnico;
 
-    private Integer cliente;
+    private String cliente;
     private String nomeCliente;
 
     public ProcessoDto() {
@@ -69,11 +69,11 @@ public class ProcessoDto implements Serializable {
         return processoDto;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -125,11 +125,11 @@ public class ProcessoDto implements Serializable {
         this.observacao = observacao;
     }
 
-    public Integer getTecnico() {
+    public String getTecnico() {
         return tecnico;
     }
 
-    public void setTecnico(Integer tecnico) {
+    public void setTecnico(String tecnico) {
         this.tecnico = tecnico;
     }
 
@@ -141,11 +141,11 @@ public class ProcessoDto implements Serializable {
         this.nomeTecnico = nomeTecnico;
     }
 
-    public Integer getCliente() {
+    public String getCliente() {
         return cliente;
     }
 
-    public void setCliente(Integer cliente) {
+    public void setCliente(String cliente) {
         this.cliente = cliente;
     }
 

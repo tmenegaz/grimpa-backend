@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "processos")
+@RequestMapping(value = "/processos")
 public class ProcessoResource {
 
     @Autowired
     private ProcessoService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ProcessoDto> findById(@PathVariable Integer id) {
+    public ResponseEntity<ProcessoDto> findById(@PathVariable String id) {
         Processo processo = service.findById(id);
         return ResponseEntity.ok().body(new ProcessoDto(processo));
     }
@@ -40,13 +40,13 @@ public class ProcessoResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProcessoDto> update(@PathVariable Integer id, @RequestBody ProcessoDto processoDto) {
+    public ResponseEntity<ProcessoDto> update(@PathVariable String id, @RequestBody ProcessoDto processoDto) {
         Processo processo = service.update(id, processoDto);
         return ResponseEntity.ok().body(new ProcessoDto(processo));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<ProcessoDto> delete(@PathVariable Integer id) {
+    public ResponseEntity<ProcessoDto> delete(@PathVariable String id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
