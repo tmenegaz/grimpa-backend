@@ -64,23 +64,23 @@ public class TecnicoService {
         return tecnico.orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
     }
 
-    public List<Tecnico> findByNome(String nome) {
-        return repository.findByNome(nome);
+    public List<Tecnico> findAllByNome(String nome) {
+        return repository.findAllByNome(nome);
     }
 
     public Tecnico findByCpf(String cpf) {
         return repository.findByCpf(cpf);
     }
 
-    public List<Tecnico> findByPerfis(Integer perfil) {
-        return repository.findByPerfis(perfil);
+    public List<Tecnico> findAllByPerfis(Integer perfil) {
+        return repository.findAllByPerfis(perfil);
     }
 
-    public List<Tecnico> findByDataCriacao(String dataCriacao) {
+    public List<Tecnico> findAllByDataCriacao(String dataCriacao) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             LocalDate localDate = LocalDate.parse(dataCriacao, formatter);
-            return repository.findByDataCriacao(localDate);
+            return repository.findAllByDataCriacao(localDate);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Formato de data inválido: " + dataCriacao, e);
         }

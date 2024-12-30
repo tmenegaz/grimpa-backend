@@ -3,10 +3,11 @@ package com.grimpa.site.domain.enums;
 public enum Perfil {
 
     CLIENTE(0, "CLIENTE"),
-    TECNICO(1, "TECNICO");
+    TECNICO(1, "TECNICO"),
+    AUXILIAR(2, "AUXILIAR");
 
-    private Integer codigo;
-    private String descricao;
+    private final Integer codigo;
+    private final String descricao;
 
     Perfil(Integer codigo, String descricao) {
         this.codigo = codigo;

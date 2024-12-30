@@ -7,19 +7,22 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private AuthenticationManager authenticationManager;
-    private JWTService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
@@ -46,8 +49,32 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     ) throws IOException, ServletException {
         UserSS userSS = ((UserSS) authResult.getPrincipal());
         String token = jwtService.generateToken(userSS);
-        response.addHeader("access-control-expose-headers", "Authorization");
-        response.addHeader("Authorization", "Bearer " + token);
+
+        ResponseCookie tokenCookie = ResponseCookie
+                .from("token", token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
+
+        String roles = userSS.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining("-")
+                );
+
+        ResponseCookie rolesCookie = ResponseCookie
+                .from("roles", roles)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
+
+        response.addHeader("Set-Cookie", tokenCookie.toString());
+        response.addHeader("Set-Cookie", rolesCookie.toString());
+        response.setContentType("application/json");
+        response.getWriter().write("{\"token\": \"" + token + "\"}");
     }
 
     @Override

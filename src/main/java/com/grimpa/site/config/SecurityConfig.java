@@ -25,6 +25,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
@@ -50,11 +52,10 @@ public class SecurityConfig {
         }
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors((corsCustomizer) -> corsCustomizer.configurationSource(corsConfigurationSource()))
-                .sessionManagement((sessionManagerCustomizer) -> sessionManagerCustomizer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                .cors((corsCustomizer) -> corsCustomizer
+                        .configurationSource(corsConfigurationSource()))
+                .sessionManagement((sessionManagerCustomizer) -> sessionManagerCustomizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests((authorize) -> authorize.requestMatchers(PUBLIC_MATCHERS).permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tecnicos").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
@@ -63,7 +64,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/clientes").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.PUT, "/clientes/*").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.DELETE, "/clientes/*").hasRole(Roles.ADMIN.getDescricao())
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.GET, "/processos").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.POST, "/processos").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.PUT, "/processos/*").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.DELETE, "/processos/*").hasRole(Roles.ADMIN.getDescricao()).anyRequest().authenticated())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -71,9 +75,13 @@ public class SecurityConfig {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        var configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(Objects.requireNonNull(env.getProperty("cors.allowed.origins"))));
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
         return source;

@@ -57,8 +57,8 @@ public class TecnicoResource {
     }
 
     @GetMapping(value = "/nome/{nome}")
-    public ResponseEntity<List<TecnicoDto>> findByNome(@PathVariable String nome) {
-        List<Tecnico> tecnicos = service.findByNome(nome);
+    public ResponseEntity<List<TecnicoDto>> findAllByNome(@PathVariable String nome) {
+        List<Tecnico> tecnicos = service.findAllByNome(nome);
         return ResponseEntity.ok().body(tecnicos.stream().map(TecnicoDto::new).collect(Collectors.toList()));
     }
 
@@ -69,14 +69,14 @@ public class TecnicoResource {
     }
 
     @GetMapping(value = "/perfis/{perfil}")
-    public ResponseEntity<List<TecnicoDto>> findByPerfil(@PathVariable Integer perfil) {
-        List<Tecnico> tecnicos = service.findByPerfis(perfil);
+    public ResponseEntity<List<TecnicoDto>> findAllByPerfil(@PathVariable Integer perfil) {
+        List<Tecnico> tecnicos = service.findAllByPerfis(perfil);
         return ResponseEntity.ok().body(tecnicos.stream().map(TecnicoDto::new).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/data_criacao/{dataCriacao}")
-    public ResponseEntity<List<TecnicoDto>> findByDataCriacao(@PathVariable String dataCriacao) {
-        List<Tecnico> tecnicos = service.findByDataCriacao(dataCriacao);
+    public ResponseEntity<List<TecnicoDto>> findAllByDataCriacao(@PathVariable String dataCriacao) {
+        List<Tecnico> tecnicos = service.findAllByDataCriacao(dataCriacao);
         return ResponseEntity.ok().body(tecnicos.stream().map(TecnicoDto::new).collect(Collectors.toList()));
 
     }

@@ -3,15 +3,22 @@ package com.grimpa.site.services;
 import com.grimpa.site.domain.Cliente;
 import com.grimpa.site.domain.Pessoa;
 import com.grimpa.site.domain.dtos.ClienteDto;
+import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.repositories.ClienteRepository;
 import com.grimpa.site.repositories.PessoaRepository;
 import com.grimpa.site.services.exceptions.DataIntegrityViolationException;
 import com.grimpa.site.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,14 +53,36 @@ public class ClienteService {
         return repository.save(clienteOld);
     }
 
-    public List<Cliente> findAll() {
-        List<Cliente> clientes = repository.findAll();
-        return clientes;
+    public Page<Cliente> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAllByExcluido(pageable);
     }
 
     public Cliente findById(String id) {
         Optional<Cliente> cliente = repository.findById(id);
         return cliente.orElseThrow(() -> new ObjectNotFoundException("Cliente não encontrado"));
+    }
+
+    public List<Cliente> findAllByNome(String nome) {
+        return repository.findAllByNome(nome);
+    }
+
+    public Cliente findByCpf(String cpf) {
+        return repository.findByCpf(cpf);
+    }
+
+    public List<Cliente> findAllByPerfis(Integer perfil) {
+        return repository.findAllByPerfis(perfil);
+    }
+
+    public List<Cliente> findAllByDataCriacao(String dataCriacao) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            LocalDate localDate = LocalDate.parse(dataCriacao, formatter);
+            return repository.findAllByDataCriacao(localDate);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Formato de data inválido: " + dataCriacao, e);
+        }
     }
 
     private void validaByCpfAndEmail(ClienteDto clienteDto) {
@@ -73,6 +102,7 @@ public class ClienteService {
         if (!cliente.getProcessos().isEmpty()) {
             throw new DataIntegrityViolationException("Cliente possui ordem de serviço e não pode ser deletado");
         }
-        repository.deleteById(id);
+        cliente.setExcluido(Excluido.EXCLUIDO);
+        repository.save(cliente);
     }
 }

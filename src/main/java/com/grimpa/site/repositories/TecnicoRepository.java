@@ -13,15 +13,14 @@ import java.util.List;
 public interface TecnicoRepository extends JpaRepository<Tecnico, String> {
 
     @Query("SELECT t FROM Tecnico t WHERE LOWER(t.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
-    List<Tecnico> findByNome(@Param("nome") String nome);
+    List<Tecnico> findAllByNome(@Param("nome") String nome);
 
     Tecnico findByCpf(String cpf);
 
-    List<Tecnico> findByPerfis(Integer perfil);
-
+    List<Tecnico> findAllByPerfis(Integer perfil);
 
     @Query("SELECT t FROM Tecnico t WHERE t.dataCriacao = :dataCriacao")
-    List<Tecnico> findByDataCriacao(@Param("dataCriacao") LocalDate dataCriacao);
+    List<Tecnico> findAllByDataCriacao(@Param("dataCriacao") LocalDate dataCriacao);
 
     @Query("SELECT t FROM Tecnico t WHERE t.excluido = 0 or t.excluido is null")
     Page<Tecnico> findAllByExcluido(Pageable pageable);
