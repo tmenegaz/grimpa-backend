@@ -29,7 +29,7 @@ public class TecnicoResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TecnicoDto> update(@PathVariable String id, @RequestBody TecnicoDto tecnicoDto) {
+    public ResponseEntity<TecnicoDto> update(@Valid @PathVariable String id, @RequestBody TecnicoDto tecnicoDto) {
         Tecnico tecnico = service.update(id, tecnicoDto);
         return ResponseEntity.ok().body(new TecnicoDto(tecnico));
     }
