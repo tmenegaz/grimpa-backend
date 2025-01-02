@@ -45,8 +45,11 @@ public class ClienteService {
     @Transactional
     public Cliente update(String id, ClienteDto clienteDto) {
         clienteDto.setId(id);
-        clienteDto.setSenha(encoder.encode(clienteDto.getSenha()));
         Cliente clienteOld = this.findById(id);
+
+        if (!clienteDto.getSenha().equals(clienteOld.getSenha())) {
+            clienteDto.setSenha(encoder.encode(clienteDto.getSenha()));
+        }
 
         validaByCpfAndEmail(clienteDto);
         clienteOld = new Cliente(clienteDto);

@@ -46,8 +46,11 @@ public class TecnicoService {
     @Transactional
     public Tecnico update(String id, TecnicoDto tecnicoDto) {
         tecnicoDto.setId(id);
-        tecnicoDto.setSenha(encoder.encode(tecnicoDto.getSenha()));
         Tecnico tecnicoOld = this.findById(id);
+
+        if (!tecnicoDto.getSenha().equals(tecnicoOld.getSenha())) {
+            tecnicoDto.setSenha(encoder.encode(tecnicoDto.getSenha()));
+        }
 
         validaByCpfAndEmail(tecnicoDto);
         tecnicoOld = new Tecnico(tecnicoDto);

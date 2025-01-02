@@ -1,7 +1,7 @@
 package com.grimpa.site.domain.enums;
 
 public enum Status {
-    ATIVO(0, "ATIVO"), PAUSADO(1, "PAUSADO"), INATIVO(2, "INATIVO");
+    ATIVO(0, "ATIVO"), PAUSA(1, "PAUSA"), INATIVO(2, "INATIVO");
 
     private final String descricao;
     private final Integer codigo;

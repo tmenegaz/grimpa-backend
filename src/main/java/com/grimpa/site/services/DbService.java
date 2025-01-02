@@ -87,7 +87,7 @@ public class DbService {
         clienteT.addRoles(Roles.USER);
 
         Processo processoBalletLPA = new Processo(null, Modalidade.BALLET, Status.ATIVO, "Treinamento intermediário", "Escola Studio de Dança", clienteLPA, tecAdmin1);
-        Processo processoBalletSC = new Processo(null, Modalidade.BALLET, Status.PAUSADO, "Treinamento avançado", "Escola Studio de Dança", clienteSC, tecAdmin2);
+        Processo processoBalletSC = new Processo(null, Modalidade.BALLET, Status.PAUSA, "Treinamento avançado", "Escola Studio de Dança", clienteSC, tecAdmin2);
         Processo processoContempLPA = new Processo(null, Modalidade.CONTEMPORANEO, Status.ATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteLPA, tecProfessor1);
         Processo processoConempSC = new Processo(null, Modalidade.CONTEMPORANEO, Status.INATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteSC, tecProfessor2);
         Processo processoConempT = new Processo(null, Modalidade.ALONGAMENTO, Status.ATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteT, tecProfessor3);
