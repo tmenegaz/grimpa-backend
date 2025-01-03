@@ -56,9 +56,8 @@ public class SecurityConfig {
                         .configurationSource(corsConfigurationSource()))
                 .sessionManagement((sessionManagerCustomizer) -> sessionManagerCustomizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize.requestMatchers(PUBLIC_MATCHERS).hasRole(Roles.SUDO.getDescricao())
-                        .requestMatchers(HttpMethod.POST, "/auth/register").hasRole(Roles.SUDO.getDescricao())
 
-                        .requestMatchers(HttpMethod.GET, "/clientes").hasRole(Roles.SUDO.getDescricao())
+                        .requestMatchers(HttpMethod.GET, "/clientes").hasAnyRole(Roles.SUDO.getDescricao())
                         .requestMatchers(HttpMethod.GET, "/tecnicos").hasRole(Roles.SUDO.getDescricao())
 
                         .requestMatchers(HttpMethod.GET, "/tecnicos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
@@ -76,6 +75,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/processos").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.PUT, "/processos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
                         .requestMatchers(HttpMethod.DELETE, "/processos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
+
+                        .requestMatchers(HttpMethod.POST, "/auth/register").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

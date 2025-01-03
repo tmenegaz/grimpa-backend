@@ -38,8 +38,8 @@ public class DbService {
         tecAdmin.addRoles(Roles.ADMIN);
 
         Cliente clienteLPA = new Cliente(null, "Letícia Azevedo", "568.063.720-07", "leticiapazevedo@gmail.com", encoder.encode("123"));
-        tecAdmin.addPerfil(Perfil.CLIENTE);
-        tecAdmin.addRoles(Roles.USER);
+        clienteLPA.addPerfil(Perfil.CLIENTE);
+        clienteLPA.addRoles(Roles.USER);
 
         Processo processoBallet = new Processo(null, Modalidade.BALLET, Status.ATIVO, "Treinamento intermediário", "Escola Studio de Dança", clienteLPA, tecAdmin);
 
@@ -82,19 +82,19 @@ public class DbService {
         clienteSC.addPerfil(Perfil.CLIENTE);
         clienteSC.addRoles(Roles.USER);
 
-        Cliente clienteT = new Cliente(null, "Letícia Outra", "123.456.789-09", "leticiaoutra@gmail.com", encoder.encode("123"));
-        clienteT.addPerfil(Perfil.CLIENTE);
-        clienteT.addRoles(Roles.USER);
+        Cliente clienteLPO = new Cliente(null, "Letícia Outra", "123.456.789-09", "leticiaoutra@gmail.com", encoder.encode("123"));
+        clienteLPO.addPerfil(Perfil.CLIENTE);
+        clienteLPO.addRoles(Roles.USER);
 
         Processo processoBalletLPA = new Processo(null, Modalidade.BALLET, Status.ATIVO, "Treinamento intermediário", "Escola Studio de Dança", clienteLPA, tecAdmin1);
         Processo processoBalletSC = new Processo(null, Modalidade.BALLET, Status.PAUSA, "Treinamento avançado", "Escola Studio de Dança", clienteSC, tecAdmin2);
         Processo processoContempLPA = new Processo(null, Modalidade.CONTEMPORANEO, Status.ATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteLPA, tecProfessor1);
         Processo processoConempSC = new Processo(null, Modalidade.CONTEMPORANEO, Status.INATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteSC, tecProfessor2);
-        Processo processoConempT = new Processo(null, Modalidade.ALONGAMENTO, Status.ATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteT, tecProfessor3);
+        Processo processoConempT = new Processo(null, Modalidade.ALONGAMENTO, Status.ATIVO, "Treinamento avançado", "Escola Studio de Dança", clienteLPO, tecProfessor3);
 
         tecnicoRepository.saveAll(Arrays.asList(tecAdmin1, tecProfessor1, tecProfessor3));
         tecnicoRepository.saveAll(Arrays.asList(tecAdmin2, tecProfessor2));
-        clienteRepository.saveAll(Arrays.asList(clienteLPA, clienteSC, clienteT));
+        clienteRepository.saveAll(Arrays.asList(clienteLPA, clienteSC, clienteLPO));
         processoRepository.saveAll(Arrays.asList(
                 processoBalletLPA,
                 processoBalletSC, processoContempLPA, processoConempSC, processoConempT));

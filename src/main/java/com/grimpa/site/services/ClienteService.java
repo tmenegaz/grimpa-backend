@@ -74,6 +74,10 @@ public class ClienteService {
         return repository.findByCpf(cpf);
     }
 
+    public Cliente findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
     public List<Cliente> findAllByPerfis(Integer perfil) {
         return repository.findAllByPerfis(perfil);
     }

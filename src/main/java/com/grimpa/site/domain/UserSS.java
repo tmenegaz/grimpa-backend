@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Table(name = "userss")
-@Entity(name = "userss")
+@Entity(name = "Userss")
 public class UserSS implements UserDetails, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
