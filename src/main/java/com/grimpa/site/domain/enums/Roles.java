@@ -2,10 +2,11 @@ package com.grimpa.site.domain.enums;
 
 public enum Roles {
     ADMIN(0, "ADMIN"),
-    USER(1, "USER");
+    USER(1, "USER"),
+    SUDO(2, "SUDO");
 
-    private Integer codigo;
-    private String descricao;
+    private final Integer codigo;
+    private final String descricao;
 
     Roles(Integer codigo, String descricao) {
         this.codigo = codigo;

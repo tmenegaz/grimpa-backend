@@ -65,8 +65,14 @@ public class UserSS implements UserDetails, Serializable {
                 .collect(Collectors.toList());
 
         boolean isAdmin = roles.contains(Roles.ADMIN);
+        boolean isSUDO = roles.contains(Roles.SUDO);
 
-        if (isAdmin) {
+        if (isSUDO) {
+            authorities.clear();
+            authorities.add(new SimpleGrantedAuthority("ROLE_SUDO"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        } else if (isAdmin) {
             authorities.clear();
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
