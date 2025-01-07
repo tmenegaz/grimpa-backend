@@ -31,6 +31,10 @@ public abstract class Pessoa implements Serializable {
 
     protected String senha;
 
+    @OneToOne
+    @JoinColumn(name = "file_path_id")
+    protected FilePath filePath;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PERFIS")
     protected Set<Integer> perfis = new HashSet<>();
@@ -136,5 +140,13 @@ public abstract class Pessoa implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getCpf());
+    }
+
+    public FilePath getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(FilePath filePath) {
+        this.filePath = filePath;
     }
 }

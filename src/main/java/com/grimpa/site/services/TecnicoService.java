@@ -74,6 +74,10 @@ public class TecnicoService {
     public Tecnico findByCpf(String cpf) {
         return repository.findByCpf(cpf);
     }
+    
+    public Tecnico findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
 
     public List<Tecnico> findAllByPerfis(Integer perfil) {
         return repository.findAllByPerfis(perfil);

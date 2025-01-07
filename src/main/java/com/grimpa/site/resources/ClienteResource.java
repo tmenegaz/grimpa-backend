@@ -2,6 +2,7 @@ package com.grimpa.site.resources;
 
 import com.grimpa.site.domain.Cliente;
 import com.grimpa.site.domain.dtos.ClienteDto;
+import com.grimpa.site.domain.dtos.FilePathDto;
 import com.grimpa.site.services.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class ClienteResource {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClienteDto> update(@PathVariable String id, @RequestBody ClienteDto clienteDto) {
         Cliente cliente = service.update(id, clienteDto);
+        return ResponseEntity.ok().body(new ClienteDto(cliente));
+    }
+
+    @PutMapping(value = "/filePath/{id}")
+    public ResponseEntity<ClienteDto> updateFilePath(@PathVariable String id, @RequestBody FilePathDto filePathDto) {
+        Cliente cliente = service.updateFilePath(id, filePathDto);
         return ResponseEntity.ok().body(new ClienteDto(cliente));
     }
 

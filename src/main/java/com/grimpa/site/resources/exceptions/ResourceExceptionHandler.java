@@ -1,6 +1,7 @@
 package com.grimpa.site.resources.exceptions;
 
 import com.grimpa.site.services.exceptions.DataIntegrityViolationException;
+import com.grimpa.site.services.exceptions.FileStorageException;
 import com.grimpa.site.services.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,10 @@ public class ResourceExceptionHandler {
         StandardError standardError = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Integrity violation", violationException.getMessage(), request.getRequestURI());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError);
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<String> handleFileStorageException(FileStorageException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 }

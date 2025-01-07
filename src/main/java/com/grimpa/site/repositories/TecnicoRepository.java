@@ -17,6 +17,9 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, String> {
 
     Tecnico findByCpf(String cpf);
 
+    @Query("SELECT c FROM Tecnico c JOIN Userss u ON c.email = u.username WHERE c.email = :email")
+    Tecnico findByEmail(@Param("email") String email);
+
     List<Tecnico> findAllByPerfis(Integer perfil);
 
     @Query("SELECT t FROM Tecnico t WHERE t.dataCriacao = :dataCriacao")

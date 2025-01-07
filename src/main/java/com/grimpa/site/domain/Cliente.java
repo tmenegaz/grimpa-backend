@@ -23,7 +23,7 @@ public class Cliente extends Pessoa {
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Processo> processos = new ArrayList<>();
-    
+
     private Excluido excluido;
 
     public Cliente() {
@@ -44,6 +44,7 @@ public class Cliente extends Pessoa {
         this.perfis = clienteDto.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
         this.roles = clienteDto.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = clienteDto.getDataCriacao();
+        this.filePath = clienteDto.getFilePath();
     }
 
     public List<Processo> getProcessos() {

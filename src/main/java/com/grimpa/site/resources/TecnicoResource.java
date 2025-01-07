@@ -68,6 +68,12 @@ public class TecnicoResource {
         return ResponseEntity.ok().body(new TecnicoDto(tecnico));
     }
 
+    @GetMapping(value = "/email/{email}")
+    public ResponseEntity<TecnicoDto> findByEmail(@PathVariable String email) {
+        Tecnico tecnico = service.findByEmail(email);
+        return ResponseEntity.ok().body(new TecnicoDto(tecnico));
+    }
+
     @GetMapping(value = "/perfis/{perfil}")
     public ResponseEntity<List<TecnicoDto>> findAllByPerfil(@PathVariable Integer perfil) {
         List<Tecnico> tecnicos = service.findAllByPerfis(perfil);

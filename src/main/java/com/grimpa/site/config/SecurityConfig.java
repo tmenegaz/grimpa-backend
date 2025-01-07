@@ -23,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +33,7 @@ import java.util.Objects;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalAuthentication
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
     private static final String[] PUBLIC_MATCHERS = {"/h2-console/**"};
 
     @Autowired
@@ -68,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/clientes/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.POST, "/clientes").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
                         .requestMatchers(HttpMethod.PUT, "/clientes/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
+                        .requestMatchers(HttpMethod.PUT, "/clientes/filePath/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.DELETE, "/clientes/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
 
                         .requestMatchers(HttpMethod.GET, "/processos").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
@@ -78,6 +81,9 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/upload").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/file/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/filePath/*").permitAll()
                         .anyRequest().authenticated())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -106,5 +112,13 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/upload")
+                .addResourceLocations("file:///C:/Work/grimpa/back/grimpa-backend/public/assets/conta/img/");
+        registry.addResourceHandler("/file/*")
+                .addResourceLocations("http://localhost:8080/public/assets/conta/img/");
     }
 }

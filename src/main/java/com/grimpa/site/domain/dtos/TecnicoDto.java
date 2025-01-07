@@ -1,6 +1,7 @@
 package com.grimpa.site.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.grimpa.site.domain.FilePath;
 import com.grimpa.site.domain.Tecnico;
 import com.grimpa.site.domain.enums.Perfil;
 import com.grimpa.site.domain.enums.Roles;
@@ -17,28 +18,30 @@ import java.util.stream.Collectors;
 public class TecnicoDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected String id;
+    private String id;
 
     @NotNull(message = "O campo NOME é requerido")
-    protected String nome;
+    private String nome;
 
     @NotNull(message = "O campo CPF é requerido")
     @CPF
-    protected String cpf;
+    private String cpf;
 
     @NotNull(message = "O campo E-MAIL é requerido")
     @Email
-    protected String email;
+    private String email;
 
     @NotNull(message = "O campo SENHA é requerido")
-    protected String senha;
+    private String senha;
 
-    protected Set<Integer> perfis = new HashSet<>();
+    private FilePath filePath;
 
-    protected Set<Integer> roles = new HashSet<>();
+    private Set<Integer> perfis = new HashSet<>();
+
+    private Set<Integer> roles = new HashSet<>();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    protected LocalDate dataCriacao;
+    private LocalDate dataCriacao;
 
     public TecnicoDto() {
         super();
@@ -54,6 +57,7 @@ public class TecnicoDto implements Serializable {
         this.perfis = tecnico.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
         this.roles = tecnico.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = tecnico.getDataCriacao();
+        this.filePath = tecnico.getFilePath();
     }
 
     public String getId() {
@@ -118,5 +122,13 @@ public class TecnicoDto implements Serializable {
 
     public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
+    }
+
+    public FilePath getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(FilePath filePath) {
+        this.filePath = filePath;
     }
 }

@@ -2,6 +2,7 @@ package com.grimpa.site.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.grimpa.site.domain.Cliente;
+import com.grimpa.site.domain.FilePath;
 import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.domain.enums.Perfil;
 import com.grimpa.site.domain.enums.Roles;
@@ -34,7 +35,9 @@ public class ClienteDto implements Serializable {
     @NotNull(message = "O campo SENHA é requerido")
     protected String senha;
 
-    private Excluido excluido;
+    protected FilePath filePath;
+
+    protected Excluido excluido;
 
     protected Set<Integer> perfis = new HashSet<>();
 
@@ -57,6 +60,7 @@ public class ClienteDto implements Serializable {
         this.perfis = cliente.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
         this.roles = cliente.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = cliente.getDataCriacao();
+        this.filePath = cliente.getFilePath();
     }
 
     public String getId() {
@@ -122,4 +126,13 @@ public class ClienteDto implements Serializable {
     public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
+
+    public FilePath getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(FilePath filePath) {
+        this.filePath = filePath;
+    }
 }
+

@@ -1,10 +1,13 @@
 package com.grimpa.site.services;
 
 import com.grimpa.site.domain.Cliente;
+import com.grimpa.site.domain.FilePath;
 import com.grimpa.site.domain.Pessoa;
 import com.grimpa.site.domain.dtos.ClienteDto;
+import com.grimpa.site.domain.dtos.FilePathDto;
 import com.grimpa.site.domain.enums.Excluido;
 import com.grimpa.site.repositories.ClienteRepository;
+import com.grimpa.site.repositories.FilePathRepository;
 import com.grimpa.site.repositories.PessoaRepository;
 import com.grimpa.site.services.exceptions.DataIntegrityViolationException;
 import com.grimpa.site.services.exceptions.ObjectNotFoundException;
@@ -34,6 +37,9 @@ public class ClienteService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    private FilePathRepository filePathRepository;
+
     public Cliente create(ClienteDto clienteDto) {
         clienteDto.setId(null);
         clienteDto.setSenha(encoder.encode(clienteDto.getSenha()));
@@ -53,6 +59,21 @@ public class ClienteService {
 
         validaByCpfAndEmail(clienteDto);
         clienteOld = new Cliente(clienteDto);
+        return repository.save(clienteOld);
+    }
+
+    @Transactional
+    public Cliente updateFilePath(String id, FilePathDto filePathDto) {
+        Cliente clienteOld = this.findById(id);
+        FilePath filePath = null;
+
+        if (filePathDto.id() != null) {
+            filePath = filePathRepository.findById(filePathDto.id())
+                    .orElseThrow(
+                            () -> new ObjectNotFoundException("Arquivo não encontrado")
+                    );
+        }
+        clienteOld.setFilePath(filePath);
         return repository.save(clienteOld);
     }
 

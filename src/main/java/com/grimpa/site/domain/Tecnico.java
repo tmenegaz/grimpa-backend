@@ -44,6 +44,7 @@ public class Tecnico extends Pessoa {
         this.perfis = tecnicoDto.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
         this.roles = tecnicoDto.getRoles().stream().map(Roles::getCodigo).collect(Collectors.toSet());
         this.dataCriacao = tecnicoDto.getDataCriacao();
+        this.filePath = tecnicoDto.getFilePath();
     }
 
     public List<Processo> getProcessos() {
