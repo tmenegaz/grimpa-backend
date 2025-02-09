@@ -3,6 +3,7 @@ package com.grimpa.site.services;
 import com.grimpa.site.domain.Cliente;
 import com.grimpa.site.domain.Processo;
 import com.grimpa.site.domain.Tecnico;
+import com.grimpa.site.domain.UserSS;
 import com.grimpa.site.domain.enums.Modalidade;
 import com.grimpa.site.domain.enums.Perfil;
 import com.grimpa.site.domain.enums.Roles;
@@ -10,12 +11,14 @@ import com.grimpa.site.domain.enums.Status;
 import com.grimpa.site.repositories.ClienteRepository;
 import com.grimpa.site.repositories.ProcessoRepository;
 import com.grimpa.site.repositories.TecnicoRepository;
+import com.grimpa.site.repositories.UserSSRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DbService {
@@ -28,6 +31,9 @@ public class DbService {
 
     @Autowired
     private ProcessoRepository processoRepository;
+
+    @Autowired
+    private UserSSRepository userSSRepository;
 
     @Autowired
     private BCryptPasswordEncoder encoder;
@@ -49,6 +55,10 @@ public class DbService {
     }
 
     public void startDbPostgreSql() {
+        UserSS sudo = new UserSS("sudo@sudo.com", encoder.encode("sudo"), Set.of(Roles.SUDO));
+        UserSS admin = new UserSS("admin@admin.com", encoder.encode("admin"), Set.of(Roles.ADMIN));
+        UserSS user = new UserSS("user@user.com", encoder.encode("user"), Set.of(Roles.USER));
+
         Tecnico tecAdmin1 = new Tecnico(null, "Tiago Menegaz", "942.595.920-09", "tmenegaz77@gmail.com", encoder.encode("123"));
         tecAdmin1.addPerfil(Perfil.TECNICO);
         tecAdmin1.addRoles(Roles.ADMIN);
@@ -98,5 +108,6 @@ public class DbService {
         processoRepository.saveAll(Arrays.asList(
                 processoBalletLPA,
                 processoBalletSC, processoContempLPA, processoConempSC, processoConempT));
+        userSSRepository.saveAll(Arrays.asList(admin, user, sudo));
     }
 }

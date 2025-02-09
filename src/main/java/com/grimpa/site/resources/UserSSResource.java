@@ -44,6 +44,5 @@ public class UserSSResource {
 
         this.repository.save(userSS);
         return ResponseEntity.ok().build();
-
     }
 }

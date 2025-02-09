@@ -1,9 +1,12 @@
 package com.grimpa.site.services;
 
+import com.grimpa.site.domain.FilePath;
 import com.grimpa.site.domain.Pessoa;
 import com.grimpa.site.domain.Tecnico;
+import com.grimpa.site.domain.dtos.FilePathDto;
 import com.grimpa.site.domain.dtos.TecnicoDto;
 import com.grimpa.site.domain.enums.Excluido;
+import com.grimpa.site.repositories.FilePathRepository;
 import com.grimpa.site.repositories.PessoaRepository;
 import com.grimpa.site.repositories.TecnicoRepository;
 import com.grimpa.site.services.exceptions.DataIntegrityViolationException;
@@ -35,6 +38,9 @@ public class TecnicoService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    private FilePathRepository filePathRepository;
+
     public Tecnico create(TecnicoDto tecnicoDto) {
         tecnicoDto.setId(null);
         tecnicoDto.setSenha(encoder.encode(tecnicoDto.getSenha()));
@@ -57,6 +63,21 @@ public class TecnicoService {
         return repository.save(tecnicoOld);
     }
 
+    @Transactional
+    public Tecnico updateFilePath(String id, FilePathDto filePathDto) {
+        Tecnico clienteOld = this.findById(id);
+        FilePath filePath = null;
+
+        if (filePathDto.id() != null) {
+            filePath = filePathRepository.findById(filePathDto.id())
+                    .orElseThrow(
+                            () -> new ObjectNotFoundException("Arquivo não encontrado")
+                    );
+        }
+        clienteOld.setFilePath(filePath);
+        return repository.save(clienteOld);
+    }
+
     public Page<Tecnico> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return repository.findAllByExcluido(pageable);
@@ -74,7 +95,7 @@ public class TecnicoService {
     public Tecnico findByCpf(String cpf) {
         return repository.findByCpf(cpf);
     }
-    
+
     public Tecnico findByEmail(String email) {
         return repository.findByEmail(email);
     }

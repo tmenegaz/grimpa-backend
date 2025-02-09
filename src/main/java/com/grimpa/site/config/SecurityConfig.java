@@ -65,6 +65,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/tecnicos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.POST, "/tecnicos").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
                         .requestMatchers(HttpMethod.PUT, "/tecnicos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
+                        .requestMatchers(HttpMethod.PUT, "/tecnicos/filePath/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
                         .requestMatchers(HttpMethod.DELETE, "/tecnicos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
 
                         .requestMatchers(HttpMethod.GET, "/clientes/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
@@ -79,9 +80,10 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.PUT, "/processos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
                         .requestMatchers(HttpMethod.DELETE, "/processos/*").hasAnyRole(Roles.SUDO.getDescricao(), Roles.ADMIN.getDescricao())
 
-                        .requestMatchers(HttpMethod.POST, "/auth/register").hasAnyRole(Roles.ADMIN.getDescricao(), Roles.USER.getDescricao())
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/upload").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pessoa/email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/file/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/filePath/*").permitAll()
                         .anyRequest().authenticated())

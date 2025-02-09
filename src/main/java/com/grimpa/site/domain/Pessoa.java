@@ -36,7 +36,8 @@ public abstract class Pessoa implements Serializable {
     protected FilePath filePath;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PERFIS")
+    @CollectionTable(name = "PERFIS", joinColumns = @JoinColumn(name = "pessoa_id"))
+    @Column(name = "perfil")
     protected Set<Integer> perfis = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.EAGER)

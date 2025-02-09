@@ -1,6 +1,7 @@
 package com.grimpa.site.resources;
 
 import com.grimpa.site.domain.Tecnico;
+import com.grimpa.site.domain.dtos.FilePathDto;
 import com.grimpa.site.domain.dtos.TecnicoDto;
 import com.grimpa.site.services.TecnicoService;
 import jakarta.validation.Valid;
@@ -32,6 +33,12 @@ public class TecnicoResource {
     public ResponseEntity<TecnicoDto> update(@Valid @PathVariable String id, @RequestBody TecnicoDto tecnicoDto) {
         Tecnico tecnico = service.update(id, tecnicoDto);
         return ResponseEntity.ok().body(new TecnicoDto(tecnico));
+    }
+
+    @PutMapping(value = "/filePath/{id}")
+    public ResponseEntity<TecnicoDto> updateFilePath(@PathVariable String id, @RequestBody FilePathDto filePathDto) {
+        Tecnico cliente = service.updateFilePath(id, filePathDto);
+        return ResponseEntity.ok().body(new TecnicoDto(cliente));
     }
 
     @DeleteMapping(value = "/{id}")
